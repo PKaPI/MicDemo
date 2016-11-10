@@ -1,4 +1,13 @@
-function Mic(index,params){
+function Mic(index,typeNum){
+	console.log(typeNum);
+	var params={};
+	if(typeNum=1){
+		params={
+			value:10,
+			type:"blue",
+			speed:8
+		}
+	}
 	base(this,LSprite,[]);
 	var self=this;
 	self.mode="score";

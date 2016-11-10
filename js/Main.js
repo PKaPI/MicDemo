@@ -33,6 +33,49 @@ var MicArray=new Array(
 	{count:3,type:'blue',value:20,speed:5},
 	{count:3,type:'blue',value:25,speed:5} 
 );//初始化音符属性数组     //游戏频率问题最多加三个音符
+var MicAtr=[
+"0000000000000000",
+"0",
+"0",
+"0",
+"3",
+"0",
+"0",
+"40040040",
+"40040040",
+"4444",
+"4444",
+"4444",
+"4444",
+"4444",
+"4444",
+"300030003",
+"10021020",
+"1002102010",
+"100210200",
+"100210200",
+"1002102020",
+"100210200",
+"1002102",
+"400400400",
+"100210200",
+"10021020120",
+"100210201200",
+"10021020120",
+"10021020120",
+"100210201020",
+"1002102020",
+"1002102020",
+"11111111",
+"11111111",
+"1111111111110",
+"4",
+"0",
+"0",
+"0",
+"0"
+]
+var MicNum=0;
 var imgList={};
 function loading(){
 
@@ -100,7 +143,7 @@ function onBackHandler(){//移除规则层
 function gameInit(){  //游戏初始化
 	 score=0;    //分数
 	 countdown=3;//准备时间
-	 timeNum=20;//游戏时间
+	 timeNum=60;//游戏时间
 	
 	backLayer=new LSprite();
 	addChild(backLayer);
@@ -178,9 +221,12 @@ function onframe(){//运动刷新
 	}
 		countItem++;
 		
-		if(countItem%50==0) { //显示频率
-		 MicNum=Math.floor(Math.random()*5);
-	     addMic(MicArray[MicNum]);//此处传的应该是一个json配置文件
+		if(countItem%50==0) { //显示频率控制不稳
+           MicNum++;
+	       addMic(MicAtr[MicNum]);//此处传的应该是一个json配置文件
+	       if(MicNum>MicAtr.length){
+	       	  MicNum=0;
+	       }
 	    } 
 	     if (countItem > 90)
 	    {
@@ -261,8 +307,8 @@ function mouseUp() {
 	hero.changeAction();//设置英雄运动函数
 }
 function addMic(params){//初始化添加游戏侧边出现滑块的频率
-    	for(var i=1;i<=params.count;i++){	
-			var mic=new Mic(i,params);
+    	for(var i=0;i<params.length;i++){	
+			var mic=new Mic(i,parseInt(params.charAt(i)));
 		    micLayer.addChild(mic);
 	    }		
 }
