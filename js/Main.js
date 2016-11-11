@@ -326,7 +326,7 @@ function addMic(){//初始化添加游戏侧边出现滑块的频率
     	    for(var j=0;j<MicAtr[i].length;j++) {
 
 	    	    	var isLast=false;
-	    	    	if(j==MicAtr[i].length-1){  //判断是否是最后一个
+	    	    	if(j==MicAtr[i].length-1){  //判断是否是最后一位
 	    	    		isLast=true;
 	    	    	}
 	    	    	location -=70;
@@ -344,7 +344,6 @@ function Hero(){//玩家角色
 	base(this,LSprite,[]);
 	var self = this;
 	var list = LGlobal.divideCoordinate(960,50,1,24);
-	console.log(list);
 	var data = new LBitmapData(imgList["hero"],0,0,40,50);
 	self.anime = new LAnimation(self,data,[ 
 		[list[0][0]],

@@ -20,14 +20,7 @@
 		<script type="text/javascript">
 		url="http://127.0.1/节奏嗨嗨/git/mic.txt"   //可以读取
 		ajax(url,function(data){
-			var strat=data.indexOf("#START");
-			console.log(data.indexOf("#START"));
-            var stratChange=data.indexOf("#GOGOSTART");
-            var str1=data.substring(strat+6,stratChange);
-            var arr1=str1.split(',');
-            console.log(arr1);
-			console.log(data.indexOf("#GOGOSTART"));
-			console.log(data.substring(strat+6,stratChange));
+			console.log(data);
 		},function(err){
 			console.log(err);
 		});
