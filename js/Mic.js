@@ -1,10 +1,10 @@
 function Mic(location,typeNum){
 	var params={};
-	if(typeNum=1){
+	if(typeNum=1){//音符数字所表示的类型
 		params={
 			value:10,
 			type:"blue",
-			speed:8
+			speed:json["LEVEL"]
 		}
 	}
 	base(this,LSprite,[]);
@@ -21,8 +21,8 @@ function Mic(location,typeNum){
 }
 Mic.prototype.init=function(){
 	var self=this;
-	var bitmap = new LBitmap(new LBitmapData(imgList["bullet"]));
-	bitmap.x=-bitmap.getWidth();	
+	var bitmap = new LBitmap(new LBitmapData(imgList["notes"],57,0,57,57));
+	bitmap.x=-bitmap.getWidth()/2;	
 	bitmap.y=-bitmap.getHeight()/2;	
 	self.addChild(bitmap);
 	
@@ -35,7 +35,7 @@ Mic.prototype.run=function(event){
 		self.parent.removeChild(self);
 		
 	 }else{
-	 	if(self.x>(width-150)&&self.x<(width-110)&&self.mode=="score"&&trigger==true){//逻辑可能有问题
+	 	if(self.x>(width-130)&&self.x<(width-100)&&self.mode=="score"&&trigger==true){//逻辑可能有问题
 	 		score+=self.value;   
 			self.mode="die";
 			Miss="good";

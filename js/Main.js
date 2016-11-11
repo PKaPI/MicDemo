@@ -22,7 +22,8 @@ var imgData=new Array(
    	{name:"hero",path:'img/hero.png'},
    	{name:"ruleInfo",path:'img/ruleInfo.jpg'},
    	{name:"backBtn",path:'img/backBtn.png'},
-   	{name:"replayBtn",path:'img/replayBtn.png'}
+   	{name:"replayBtn",path:'img/replayBtn.png'},
+   	{name:"notes",path:'img/notes.png'}
    	
 );
 // 出现音符的 数量、 类型、分数、速度
@@ -33,48 +34,58 @@ var MicArray=new Array(
 	{count:3,type:'blue',value:20,speed:5},
 	{count:3,type:'blue',value:25,speed:5} 
 );//初始化音符属性数组     //游戏频率问题最多加三个音符
-var MicAtr=[
-"0000000000000000",
-"0",
-"0",
-"0",
-"3",
-"0",
-"0",
-"40040040",
-"40040040",
-"4444",
-"4444",
-"4444",
-"4444",
-"4444",
-"4444",
-"300030003",
-"10021020",
-"1002102010",
-"100210200",
-"100210200",
-"1002102020",
-"100210200",
-"1002102",
-"400400400",
-"100210200",
-"10021020120",
-"100210201200",
-"10021020120",
-"10021020120",
-"100210201020",
-"1002102020",
-"1002102020",
-"11111111",
-"11111111",
-"1111111111110",
-"4",
-"0",
-"0",
-"0",
-"0"
-]
+
+var json={
+	"TITLE":"演示音樂",
+	"WAVE":"test.ogg",
+	"OFFSET":-0.4017,
+	"SONGVOL":80,
+
+	"COURSE":3,
+	"LEVEL":7,
+	"MicAtr":[
+	"000000000",
+	"0",
+	"0",
+	"0",
+	"3",
+	"0",
+	"0",
+	"40040040",
+	"40040040",
+	"4444",
+	"4444",
+	"4444",
+	"4444",
+	"4444",
+	"4444",
+	"300030003",
+	"10021020",
+	"1002102010",
+	"100210200",
+	"100210200",
+	"1002102020",
+	"100210200",
+	"1002102",
+	"400400400",
+	"100210200",
+	"10021020120",
+	"100210201200",
+	"10021020120",
+	"10021020120",
+	"100210201020",
+	"1002102020",
+	"1002102020",
+	"11111111",
+	"11111111",
+	"1111111111110",
+	"4",
+	"0",
+	"0",
+	"0",
+	"0"
+	]
+}
 var MicNum=0;
 var isStart=false;//判断开始
 var imgList={};
@@ -199,9 +210,8 @@ function gameInit(){  //游戏初始化
 	resultLayer.addChild(timeTxt);
 
     setTimeout(function(){
-    	
-		intervalId=setInterval(timeCount,1000);
-		intervalMic=setInterval(timeLife,1000);
+    	intervalMic=setInterval(timeLife,1000);
+		
     },1000);
     
 	backLayer.addEventListener(LEvent.ENTER_FRAME,onframe);
@@ -224,19 +234,6 @@ function onframe(){//运动刷新
 			statusTxt.text=Miss;
 		}
 	}
-		countItem++;
-		
-		// if(countItem%50==0) { //显示频率控制不稳
-  //          MicNum++;
-	 //       addMic(MicAtr[MicNum]);//此处传的应该是一个json配置文件
-	 //       if(MicNum>MicAtr.length){
-	 //       	  MicNum=0;
-	 //       }
-	 //    } 
-	 //     if (countItem > 90)
-	 //    {
-		// 	countItem=1;
-		// }
 	    scoreTxt.text="得分："+score;
         
 		if(timeNum==0){
@@ -259,8 +256,9 @@ function timeLife(){
 		}else{
 			isStart=true;
 			if(intervalMic){
-			clearInterval(intervalMic);
-		   }
+			 clearInterval(intervalMic);
+			 intervalId=setInterval(timeCount,1000);
+		    }
 			 
 		}
 }
@@ -321,25 +319,30 @@ function mouseUp() {
 }
 function addMic(){//初始化添加游戏侧边出现滑块的频率
 	    var location=0;//音符出现的位置记录
-    	for(var i=0;i<MicAtr.length;i++) {
-            
-    	    for(var j=0;j<MicAtr[i].length;j++) {
+    	for(var i=0;i<json["MicAtr"].length;i++) {
+    		location=-width*i //记录
+    	    for(var j=0;j<json["MicAtr"][i].length;j++) {
 
-	    	    	var isLast=false;
-	    	    	if(j==MicAtr[i].length-1){  //判断是否是最后一位
-	    	    		isLast=true;
-	    	    	}
-	    	    	location -=70;
-	    	    	if(isLast){
-							location-=150;
-					}
-		    	var mic=new Mic(location,parseInt(MicAtr[i].charAt(j)));
+	    	    	location -= width/(json["MicAtr"][i].length+1);
+	    	    
+				var line=new Line(i);
+				micLayer.addChild(line);
+		    	var mic=new Mic(location,parseInt(json["MicAtr"][i].charAt(j)));
 		        micLayer.addChild(mic);
 		    }	
-	    }
-	    console.log(location);		
+	    }	
 }
-
+function Line(inum){
+	base(this,LSprite,[]);
+	var self=this;
+	self.speed=json["LEVEL"];
+	self.graphics.drawLine(2,"red",[-inum*width,height/2-50,-inum*width,height/2+50]);
+	self.addEventListener(LEvent.ENTER_FRAME,self.run);
+}
+Line.prototype.run=function(event){
+	var self=event.target;
+	self.x +=self.speed;
+}
 function Hero(){//玩家角色
 	base(this,LSprite,[]);
 	var self = this;
