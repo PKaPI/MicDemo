@@ -76,6 +76,7 @@ var MicAtr=[
 "0"
 ]
 var MicNum=0;
+var isStart=false;//判断开始
 var imgList={};
 function loading(){
 
@@ -200,7 +201,7 @@ function gameInit(){  //游戏初始化
     setTimeout(function(){
     	
 		intervalId=setInterval(timeCount,1000);
-		
+		intervalMic=setInterval(timeLife,1000);
     },1000);
     
 	backLayer.addEventListener(LEvent.ENTER_FRAME,onframe);
@@ -212,6 +213,10 @@ function onframe(){//运动刷新
 	statusTxt.size=50;
 	statusTxt.color='red';
 	timeTxt.text=timeTxt.text="剩余时间："+timeNum+" 秒";
+	if(isStart){
+		addMic();
+		isStart=false;
+	}
 	if(countdown<=0) {
 		statusTxt.text="go";
 	    statusTxt.color='yellow';
@@ -221,17 +226,17 @@ function onframe(){//运动刷新
 	}
 		countItem++;
 		
-		if(countItem%50==0) { //显示频率控制不稳
-           MicNum++;
-	       addMic(MicAtr[MicNum]);//此处传的应该是一个json配置文件
-	       if(MicNum>MicAtr.length){
-	       	  MicNum=0;
-	       }
-	    } 
-	     if (countItem > 90)
-	    {
-			countItem=1;
-		}
+		// if(countItem%50==0) { //显示频率控制不稳
+  //          MicNum++;
+	 //       addMic(MicAtr[MicNum]);//此处传的应该是一个json配置文件
+	 //       if(MicNum>MicAtr.length){
+	 //       	  MicNum=0;
+	 //       }
+	 //    } 
+	 //     if (countItem > 90)
+	 //    {
+		// 	countItem=1;
+		// }
 	    scoreTxt.text="得分："+score;
         
 		if(timeNum==0){
@@ -241,15 +246,23 @@ function onframe(){//运动刷新
 }
 function timeCount() {  //开场前倒计时秒数
 	if(timeNum>0){
-		if(countdown>=0){
-			countdown-=1;
-		}
 		timeNum-=1;
 	}else{
 		if(intervalId){
 			clearInterval(intervalId);
 		}
 	}
+}
+function timeLife(){
+	if(countdown>=0){
+			countdown-=1;
+		}else{
+			isStart=true;
+			if(intervalMic){
+			clearInterval(intervalMic);
+		   }
+			 
+		}
 }
 function gameOver() {
 	backLayer.removeEventListener(LEvent.ENTER_FRAME,onframe);
@@ -306,11 +319,25 @@ function mouseUp() {
 	hero.moveType="right";
 	hero.changeAction();//设置英雄运动函数
 }
-function addMic(params){//初始化添加游戏侧边出现滑块的频率
-    	for(var i=0;i<params.length;i++){	
-			var mic=new Mic(i,parseInt(params.charAt(i)));
-		    micLayer.addChild(mic);
-	    }		
+function addMic(){//初始化添加游戏侧边出现滑块的频率
+	    var location=0;//音符出现的位置记录
+    	for(var i=0;i<MicAtr.length;i++) {
+            
+    	    for(var j=0;j<MicAtr[i].length;j++) {
+
+	    	    	var isLast=false;
+	    	    	if(j==MicAtr[i].length-1){  //判断是否是最后一个
+	    	    		isLast=true;
+	    	    	}
+	    	    	location -=70;
+	    	    	if(isLast){
+							location-=150;
+					}
+		    	var mic=new Mic(location,parseInt(MicAtr[i].charAt(j)));
+		        micLayer.addChild(mic);
+		    }	
+	    }
+	    console.log(location);		
 }
 
 function Hero(){//玩家角色

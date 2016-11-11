@@ -1,5 +1,4 @@
-function Mic(index,typeNum){
-	console.log(typeNum);
+function Mic(location,typeNum){
 	var params={};
 	if(typeNum=1){
 		params={
@@ -12,7 +11,8 @@ function Mic(index,typeNum){
 	var self=this;
 	self.mode="score";
 	self.id="";
-	self.x=-70*index;
+	
+	self.x=location;
 	self.y=height/2;
 	self.value=params.value;//自带属性分数
 	self.type=params.type;
