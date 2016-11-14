@@ -81,17 +81,14 @@ Mic.prototype.run=function(event){
 		self.parent.removeChild(self);
 		
 	 }else{
-	 	if(self.x>(width-130)&&self.x<(width-80)&&self.mode=="score"&&trigger==true){//逻辑可能有问题
-	 		score+=self.value;   
+	 	if(self.x>(width-130)&&self.x<(width-70)&&self.mode=="score"&&trigger==true){//逻辑可能有问题  
 			self.mode="die";
 			Miss="good";
 			trigger=false;
-			LTweenLite.
-	to(self,0.6,{x:160,y:70,ease:LEasing.Quint.easeOut,onComplete:self.onCoincomplete});	
+			LTweenLite.to(self,1.2,{x:170,y:70,ease:LEasing.Quint.easeOut,onComplete:self.onCoincomplete});	
 			
-//		    self.bitmap= new LBitmap(new LBitmapData(imgList["mic"]));//根据类型改变皮肤
 	   }
-	 	if(self.x>(width-90)&&self.mode=="score"){
+	 	if(self.x>(width-70)&&self.mode=="score"){
 	 	
 	 		score=score>0?score-5:0;
 	 		Miss="Miss";
@@ -105,5 +102,6 @@ Mic.prototype.run=function(event){
 }
 Mic.prototype.onCoincomplete=function(event){
 	var self = event.target;
+	score+=self.value;
 	self.parent.removeChild(self);
 }

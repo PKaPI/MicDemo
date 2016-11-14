@@ -1,5 +1,5 @@
 init(40,"mylegend",640,960,loading);
-var loadingLayer,startLayer,backLayer,micLayer,playLayer,targetLayer,resultLayer,flashLayer,shareLayer;
+var loadingLayer,startLayer,backLayer,micLayer,playLayer,resultLayer,flashLayer,shareLayer;
 var width,height;
 var bitmapData,bitmap;
 var replayBtn;
@@ -14,21 +14,15 @@ var trigger=false;//记录触发状态
 var MicNum;//记录音符滑块类型
 var isNoTime=false;//时间用尽判断
 var imgData=new Array(
-	{name:"bg",path:'img/background.png'},
-   	{name:"mic",path:'img/mic.png'},
-   	{name:"bullet",path:'img/bullet.png'},
    	{name:"playBtn",path:'img/playBtn.png'},
    	{name:"ruleBtn",path:'img/ruleBtn.png'},
-   	{name:"hero",path:'img/hero.png'},
    	{name:"ruleInfo",path:'img/ruleInfo.jpg'},
    	{name:"backBtn",path:'img/backBtn.png'},
    	{name:"replayBtn",path:'img/replayBtn.png'},
    	{name:"notes",path:'img/notes.png'},
    	{name:"explosion_upper",path:'img/explosion_upper.png'},
    	{name:"explosion_lower",path:'img/explosion_lower.png'}
-   	
-   	
-   	
+   	 	
 );
 // 出现音符的 数量、 类型、分数、速度
 var MicArray=new Array(
@@ -90,7 +84,7 @@ var json={
 	"0"
 	]
 }
-var MicNum=0;
+console.log(json["MicAtr"]);
 var isStart=false;//判断开始
 var imgList={};
 function loading(){
@@ -100,7 +94,7 @@ function loading(){
 	startLayer=new LSprite();
 	addChild(startLayer);
 
-    loadingLayer=new LoadingSample2(40);
+    loadingLayer=new LoadingSample3(40);
     startLayer.addChild(loadingLayer);
     LLoadManage.load(
     	imgData,
@@ -238,22 +232,26 @@ function onframe(){//运动刷新
 		}
 	}
 	    scoreTxt.text="得分："+score;
-        
 		if(timeNum==0){
 			gameOver();
-		}
-	
+	    }	
+
 }
-function timeCount() {  //开场前倒计时秒数
+function timeCount() {  
 	if(timeNum>0){
 		timeNum-=1;
+		if(timeNum==30){ //
+	    	for(var i=0;i<micLayer.childList.length;i++){
+	    	  micLayer.childList[i].speed=15;	
+	    	}
+	    }
 	}else{
 		if(intervalId){
 			clearInterval(intervalId);
 		}
 	}
 }
-function timeLife(){
+function timeLife(){ //开场前倒计时秒数
 	if(countdown>=0){
 			countdown-=1;
 		}else{
@@ -267,9 +265,6 @@ function timeLife(){
 }
 function gameOver() {
 	backLayer.removeEventListener(LEvent.ENTER_FRAME,onframe);
-	
-    // playingFlag=0;
-
 	micLayer.removeAllChild();
     removeChild(micLayer);	
 	
@@ -295,12 +290,12 @@ function gameOver() {
 	tipsTxt.x = (width-tipsTxt.getWidth())/2;
 			
 	replayBtn = new LButton(new LBitmap(new LBitmapData(imgList["replayBtn"])),new LBitmap(new LBitmapData(imgList["replayBtn"])));
-	replayBtn.x = -270;
-	replayBtn.y = 490;	
+	replayBtn.x = (width-replayBtn.getWidth())/2;
+	replayBtn.y = -100;	
 	resultLayer.addChild(replayBtn);
 	
 	replayBtn.addEventListener(LMouseEvent.MOUSE_DOWN, onReplayHandler);
-	LTweenLite.to(replayBtn,1,{x:(width-replayBtn.getWidth())/2,y:2*height/3,ease:LEasing.Quint.easeOut,delay:1});
+	LTweenLite.to(replayBtn,1.2,{x:(width-replayBtn.getWidth())/2,y:2*height/3,ease:LEasing.Quint.easeIn,delay:0.5});
 }
 function onReplayHandler(){
 	resultLayer.die();
@@ -350,7 +345,7 @@ function Hero(){//玩家角色
 	var self = this;
 	var list = LGlobal.divideCoordinate(2890,680,4,17);
 	var data = new LBitmapData(imgList["explosion_upper"],0,0,170,170);
-	self.anime = new LAnimation(self,data,list);//怎样修改data
+	self.anime = new LAnimation(self,data,list);  //怎样修改data
     
 	self.scaleX=0.5;
 	self.scaleY=0.5;
