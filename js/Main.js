@@ -23,7 +23,11 @@ var imgData=new Array(
    	{name:"ruleInfo",path:'img/ruleInfo.jpg'},
    	{name:"backBtn",path:'img/backBtn.png'},
    	{name:"replayBtn",path:'img/replayBtn.png'},
-   	{name:"notes",path:'img/notes.png'}
+   	{name:"notes",path:'img/notes.png'},
+   	{name:"explosion_upper",path:'img/explosion_upper.png'},
+   	{name:"explosion_lower",path:'img/explosion_lower.png'}
+   	
+   	
    	
 );
 // 出现音符的 数量、 类型、分数、速度
@@ -160,7 +164,7 @@ function gameInit(){  //游戏初始化
 	backLayer=new LSprite();
 	addChild(backLayer);
 	
-    backLayer.graphics.drawRect(1,"#000000",[0,0,640,960],true,"pink");
+    backLayer.graphics.drawRect(1,"#000000",[0,0,640,960],true,"#222");
     
     resultLayer=new LSprite();//结果
     addChild(resultLayer);
@@ -217,8 +221,7 @@ function gameInit(){  //游戏初始化
 	backLayer.addEventListener(LEvent.ENTER_FRAME,onframe);
 }
 function onframe(){//运动刷新
-	hero.anime.onframe();
-	
+	hero.onframe();
 	statusTxt.text=countdown;
 	statusTxt.size=50;
 	statusTxt.color='red';
@@ -321,22 +324,21 @@ function addMic(){//初始化添加游戏侧边出现滑块的频率
 	    var location=0;//音符出现的位置记录
     	for(var i=0;i<json["MicAtr"].length;i++) {
     		location=-width*i //记录
+    		var line=new Line(i);
+			micLayer.addChild(line);
     	    for(var j=0;j<json["MicAtr"][i].length;j++) {
 
-	    	    	location -= width/(json["MicAtr"][i].length+1);
-	    	    
-				var line=new Line(i);
-				micLayer.addChild(line);
+	    	    location -= width/(json["MicAtr"][i].length+1);
 		    	var mic=new Mic(location,parseInt(json["MicAtr"][i].charAt(j)));
 		        micLayer.addChild(mic);
 		    }	
-	    }	
+	    }
 }
 function Line(inum){
 	base(this,LSprite,[]);
 	var self=this;
 	self.speed=json["LEVEL"];
-	self.graphics.drawLine(2,"red",[-inum*width,height/2-50,-inum*width,height/2+50]);
+	self.graphics.drawLine(1,"#ffffff",[-inum*width,height/2-60,-inum*width,height/2+60]);
 	self.addEventListener(LEvent.ENTER_FRAME,self.run);
 }
 Line.prototype.run=function(event){
@@ -346,16 +348,12 @@ Line.prototype.run=function(event){
 function Hero(){//玩家角色
 	base(this,LSprite,[]);
 	var self = this;
-	var list = LGlobal.divideCoordinate(960,50,1,24);
-	var data = new LBitmapData(imgList["hero"],0,0,40,50);
-	self.anime = new LAnimation(self,data,[ 
-		[list[0][0]],
-		[list[0][1]],
-		[list[0][2],list[0][3],list[0][4],list[0][5],list[0][6],list[0][7],list[0][8],list[0][9],list[0][10],list[0][11],list[0][12]],
-		[list[0][13],list[0][14],list[0][15],list[0][16],list[0][17],list[0][18],list[0][19],list[0][20],list[0][21],list[0][22],list[0][23]]
-	]);
-	self.scaleX=1.5;
-	self.scaleY=2;
+	var list = LGlobal.divideCoordinate(2890,680,4,17);
+	var data = new LBitmapData(imgList["explosion_upper"],0,0,170,170);
+	self.anime = new LAnimation(self,data,list);//怎样修改data
+    
+	self.scaleX=0.5;
+	self.scaleY=0.5;
 	self.moveType="right";
 	self.isJump=false;
 	self.x=width-130;
@@ -368,12 +366,10 @@ Hero.prototype.onframe = function (){
 };
 Hero.prototype.changeAction = function(){
 	var self = this;
-	if(self.moveType == "left"){
-		hero.anime.setAction(3);
-	}else if(self.moveType == "right"){
+   if(self.moveType == "right"){
 		hero.anime.setAction(2);
 	}else if(hero.isJump){
-		hero.anime.setAction(1,0);
+		hero.anime.setAction(1);
 	}else{
 		hero.anime.setAction(0,0);
 	}

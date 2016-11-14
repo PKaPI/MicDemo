@@ -1,31 +1,77 @@
 function Mic(location,typeNum){
 	var params={};
-	if(typeNum=1){//音符数字所表示的类型
+	switch(typeNum){//音符数字所表示的类型
+		case 0:
 		params={
 			value:10,
 			type:"blue",
 			speed:json["LEVEL"]
-		}
+		};
+		break;
+		case 1:
+		params={
+			value:20,
+			type:"blue",
+			speed:json["LEVEL"]
+		};
+		break;
+		case 3:
+		params={
+			value:15,
+			type:"blue",
+			speed:json["LEVEL"]
+		};
+		break;
+		case 4:
+		params={
+			value:25,
+			type:"blue",
+			speed:json["LEVEL"]
+		};
+		break;
+		default:
+		params={
+		    value:10,
+			type:"blue",
+			speed:json["LEVEL"]
+	    };
+		
 	}
 	base(this,LSprite,[]);
 	var self=this;
 	self.mode="score";
 	self.id="";
-	
 	self.x=location;
 	self.y=height/2;
 	self.value=params.value;//自带属性分数
 	self.type=params.type;
 	self.speed=params.speed;
-	this.init();
+	this.init(typeNum);
 }
-Mic.prototype.init=function(){
+Mic.prototype.init=function(typeNum){
 	var self=this;
-	var bitmap = new LBitmap(new LBitmapData(imgList["notes"],57,0,57,57));
-	bitmap.x=-bitmap.getWidth()/2;	
-	bitmap.y=-bitmap.getHeight()/2;	
-	self.addChild(bitmap);
-	
+	var list = LGlobal.divideCoordinate(825,110,2,15);
+	var data =new LBitmapData(imgList["notes"],0,0,57,57);
+	// data.x=-data.getWidth()/2;	
+	// data.y=-data.getHeight()/2;	
+	var Bullets = new LAnimationTimeline(data,[ 
+		[list[0][1],list[1][1]],
+		[list[0][2],list[1][2]],
+		[list[0][3],list[1][3]],
+		[list[0][4],list[1][4]],
+		[list[0][5],list[1][5]],
+		[list[0][6],list[1][6]],
+		[list[0][7],list[1][7]],
+		[list[0][8],list[1][8]],
+		[list[0][9],list[1][9]],
+		[list[0][10],list[1][10]],
+		[list[0][11],list[1][11]]
+		]);
+	Bullets.setAction(typeNum);
+	Bullets.speed = 3;
+	Bullets.x=-Bullets.getWidth()/2;
+	Bullets.y=-Bullets.getHeight()/2;
+	self.addChild(Bullets);
 	self.addEventListener(LEvent.ENTER_FRAME,self.run);
 }
 Mic.prototype.run=function(event){
@@ -35,23 +81,13 @@ Mic.prototype.run=function(event){
 		self.parent.removeChild(self);
 		
 	 }else{
-	 	if(self.x>(width-130)&&self.x<(width-100)&&self.mode=="score"&&trigger==true){//逻辑可能有问题
+	 	if(self.x>(width-130)&&self.x<(width-80)&&self.mode=="score"&&trigger==true){//逻辑可能有问题
 	 		score+=self.value;   
 			self.mode="die";
 			Miss="good";
 			trigger=false;
-			
-			
-//			if(Math.abs(width-110-self.x)<40){
-//				console.log(1);
-//				Miss="perfect";
-//			}
-//			if(20<Math.abs(width-110-self.x)<30){
-//				Miss="good";
-//			}
-//			if(30<Math.abs(width-110-self.x)<40){
-//				Miss="";
-//			}
+			LTweenLite.
+	to(self,0.6,{x:160,y:70,ease:LEasing.Quint.easeOut,onComplete:self.onCoincomplete});	
 			
 //		    self.bitmap= new LBitmap(new LBitmapData(imgList["mic"]));//根据类型改变皮肤
 	   }
@@ -66,4 +102,8 @@ Mic.prototype.run=function(event){
 	 	}
    }
 	
+}
+Mic.prototype.onCoincomplete=function(event){
+	var self = event.target;
+	self.parent.removeChild(self);
 }
